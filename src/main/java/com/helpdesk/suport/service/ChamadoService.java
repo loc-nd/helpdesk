@@ -6,10 +6,9 @@ import com.helpdesk.suport.exception.UsuarioNaoEncontradoException;
 import com.helpdesk.suport.models.dto.*;
 import com.helpdesk.suport.models.entity.*;
 import com.helpdesk.suport.repository.ChamadoRepository;
-import com.helpdesk.suport.repository.MensagemRepositoy;
+import com.helpdesk.suport.repository.MensagemRepository;
 import com.helpdesk.suport.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,11 +22,11 @@ public class ChamadoService {
 
     private final ChamadoRepository chamadoRepository;
     private final UsuarioRepository usuarioRepository;
-    private final MensagemRepositoy mensagemRepositoy;
+    private final MensagemRepository mensagemRepository;
 
 
 
-    public Chamado criarChamado(ChamadoCreateDTO dto, UsuarioLogadoDTO usuarioLogado) throws Throwable {
+    public Chamado criarChamado(ChamadoCreateDTO dto, UsuarioLogadoDTO usuarioLogado){
         Usuario criador = usuarioRepository.findById(dto.usuarioCriador())
                 .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário criador não encontrado"));
 
