@@ -1,6 +1,7 @@
 package com.helpdesk.suport.models.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,8 +24,9 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
+    @Email
     private String email;
-    @OneToOne
+    @ManyToOne
     private Setor setor;
     @OneToMany
     private List<Chamado> chamadosCriados = new ArrayList<>();

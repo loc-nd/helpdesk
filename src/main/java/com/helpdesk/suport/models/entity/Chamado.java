@@ -24,6 +24,8 @@ public class Chamado {
     private String descricao;
     @Enumerated(EnumType.STRING)
     private PrioridadeEnum prioridade;
+    @Enumerated(EnumType.STRING)
+    private StatusChamadoEnum status;
     @ManyToOne
     @JoinColumn(name = "criador_id")
     private Usuario usuarioCriador;
