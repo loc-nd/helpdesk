@@ -11,7 +11,7 @@ public class ErrorResponse {
     public ErrorResponse(String message, int status) {
         this.message = message;
         this.status = status;
-        this.timestamp = timestamp;
+        this.timestamp = LocalDateTime.now();
     }
 
     public String getMessage() {

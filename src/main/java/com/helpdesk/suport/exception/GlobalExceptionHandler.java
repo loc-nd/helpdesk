@@ -23,17 +23,17 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(exception.getMessage(), HttpStatus.NOT_FOUND.value()));
     }
 
-    @ExceptionHandler(UsuarioNaoEncontradoException.class)
+    @ExceptionHandler(SetorNaoEncontradoException.class)
     public ResponseEntity<ErrorResponse> handleSetorNaoEncontradoException(SetorNaoEncontradoException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(exception.getMessage(), HttpStatus.NOT_FOUND.value()));
     }
 
-    @ExceptionHandler(UsuarioNaoEncontradoException.class)
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception exception) {
-        log.error("Erro inesperado: " + exception.getMessage());
+        log.error("Erro inesperado: {}" + exception.getMessage(), exception);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(exception.getMessage(), HttpStatus.NOT_FOUND.value()));
+                .body(new ErrorResponse("Erro interno no servidor", HttpStatus.INTERNAL_SERVER_ERROR.value()));
     }
 }

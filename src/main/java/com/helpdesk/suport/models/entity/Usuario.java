@@ -28,10 +28,10 @@ public class Usuario {
     private String email;
     @ManyToOne
     private Setor setor;
-    @OneToMany
+    @OneToMany(mappedBy = "usuarioCriador")
     private List<Chamado> chamadosCriados = new ArrayList<>();
     @ManyToOne
     private Usuario usuarioResponsavel;
-    @ManyToMany
+    @ManyToMany(mappedBy = "observadores")
     private Set<Chamado> chamadosObservados = new HashSet<>();
 }
