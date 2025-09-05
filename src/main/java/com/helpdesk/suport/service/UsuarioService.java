@@ -21,7 +21,7 @@ public class UsuarioService {
     private final SetorRepository setorRepository;
 
 
-    public UsuarioResponseDTO criar(UsuarioCreateDTO dto) {
+    public UsuarioResponseDTO criarSetor(UsuarioCreateDTO dto) {
         Setor setor = setorRepository.findById(dto.setorId())
                 .orElseThrow(() -> new SetorNaoEncontradoException("Setor não encontrado"));
 
@@ -33,13 +33,13 @@ public class UsuarioService {
         return toResponseDTO(usuarioRepository.save(usuario));
     }
 
-    public List<UsuarioResponseDTO> listar() {
+    public List<UsuarioResponseDTO> listarUsuarios() {
         return usuarioRepository.findAll().stream()
                 .map(this::toResponseDTO)
                 .toList();
     }
 
-    public UsuarioResponseDTO atualizar(Long id, UsuarioCreateDTO dto) {
+    public UsuarioResponseDTO atualizarUsuario(Long id, UsuarioCreateDTO dto) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário não encontrado"));
 
@@ -53,7 +53,7 @@ public class UsuarioService {
         return toResponseDTO(usuarioRepository.save(usuario));
     }
 
-    public void deletar(Long id) {
+    public void deletarUsuario(Long id) {
         usuarioRepository.deleteById(id);
     }
 

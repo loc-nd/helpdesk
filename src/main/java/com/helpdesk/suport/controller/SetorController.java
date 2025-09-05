@@ -19,23 +19,23 @@ public class SetorController {
     private final SetorService setorService;
 
     @PostMapping
-    public ResponseEntity<SetorResponseDTO> criar(@RequestBody @Valid SetorCreateDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(setorService.criar(dto));
+    public ResponseEntity<SetorResponseDTO> criarSetor(@RequestBody @Valid SetorCreateDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(setorService.criarSetor(dto));
     }
 
     @GetMapping
-    public ResponseEntity<List<SetorResponseDTO>> listar() {
-        return ResponseEntity.ok(setorService.listar());
+    public ResponseEntity<List<SetorResponseDTO>> listarSetores() {
+        return ResponseEntity.ok(setorService.listarSetores());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SetorResponseDTO> atualizar(@PathVariable Long id, @RequestBody @Valid SetorCreateDTO dto) {
-        return ResponseEntity.ok(setorService.atualizar(id, dto));
+    public ResponseEntity<SetorResponseDTO> atualizarSetor(@PathVariable Long id, @RequestBody @Valid SetorCreateDTO dto) {
+        return ResponseEntity.ok(setorService.atualizarSetor(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        setorService.deletar(id);
+    public ResponseEntity<Void> deletarSetor(@PathVariable Long id) {
+        setorService.deletarSetor(id);
         return ResponseEntity.noContent().build();
     }
 }

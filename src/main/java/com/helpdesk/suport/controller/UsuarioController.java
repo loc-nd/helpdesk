@@ -19,23 +19,23 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
 
     @PostMapping
-    public ResponseEntity<UsuarioResponseDTO> criar(@RequestBody @Valid UsuarioCreateDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.criar(dto));
+    public ResponseEntity<UsuarioResponseDTO> criarUsuario(@RequestBody @Valid UsuarioCreateDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.criarSetor(dto));
     }
 
     @GetMapping
-    public ResponseEntity<List<UsuarioResponseDTO>> listar() {
-        return ResponseEntity.ok(usuarioService.listar());
+    public ResponseEntity<List<UsuarioResponseDTO>> listarUsuarios() {
+        return ResponseEntity.ok(usuarioService.listarUsuarios());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioResponseDTO> atualizar(@PathVariable Long id, @RequestBody @Valid UsuarioCreateDTO dto) {
-        return ResponseEntity.ok(usuarioService.atualizar(id, dto));
+    public ResponseEntity<UsuarioResponseDTO> atualizarUsuario(@PathVariable Long id, @RequestBody @Valid UsuarioCreateDTO dto) {
+        return ResponseEntity.ok(usuarioService.atualizarUsuario(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        usuarioService.deletar(id);
+    public ResponseEntity<Void> deletarUsuario(@PathVariable Long id) {
+        usuarioService.deletarUsuario(id);
         return ResponseEntity.noContent().build();
     }
 }

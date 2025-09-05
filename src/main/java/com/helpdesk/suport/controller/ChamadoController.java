@@ -3,7 +3,6 @@ package com.helpdesk.suport.controller;
 import com.helpdesk.suport.models.dto.*;
 import com.helpdesk.suport.service.ChamadoService;
 import jakarta.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,17 +35,17 @@ public class ChamadoController {
             @RequestParam(defaultValue = "false") boolean isAdmin) {
 
         ChamadoFiltroDTO filtro = new ChamadoFiltroDTO(status, prioridade);
-        var lista = chamadoService.listarChamados(filtro, new UsuarioLogadoDTO(usuarioLogadoId, isAdmin));
+        var lista = chamadoService.listarChamados(new UsuarioLogadoDTO(usuarioLogadoId, isAdmin));
         return ResponseEntity.ok(lista);
     }
 
     @GetMapping("/usuario/{userId}")
-    public ResponseEntity<List<ChamadoResponseDTO>> listarPorUsuario(
+    public ResponseEntity<List<ChamadoResponseDTO>> listarPorUsuarioCriador(
             @PathVariable Long userId,
             @RequestParam Long usuarioLogadoId,
             @RequestParam(defaultValue = "false") boolean isAdmin) {
 
-        var lista = chamadoService.listarChamadosPorUsuario(userId, new UsuarioLogadoDTO(usuarioLogadoId, isAdmin));
+        var lista = chamadoService.listarChamadosPorUsuarioCriador(userId, new UsuarioLogadoDTO(usuarioLogadoId, isAdmin));
         return ResponseEntity.ok(lista);
     }
 

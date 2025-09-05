@@ -159,7 +159,7 @@ public class ChamadoService {
     }
 
 
-    public List<ChamadoResponseDTO> listarChamadosPorUsuario(Long usuarioId, UsuarioLogadoDTO usuarioLogado) {
+    public List<ChamadoResponseDTO> listarChamadosPorUsuarioCriador(Long usuarioId, UsuarioLogadoDTO usuarioLogado) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário não encontrado"));
 
