@@ -8,5 +8,4 @@ public record MensagemResponseDTO(
         String remetenteNome,
         Long chamadoId,
         LocalDateTime dataEnvio
-) {
-}
+){}

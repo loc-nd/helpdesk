@@ -7,5 +7,4 @@ public record MensagemCreateDTO(
         @NotBlank String conteudo,
         @NotNull Long usuarioRemetenteId,
         @NotNull Long chamadoId
-) {
-}
+) {}

@@ -2,11 +2,13 @@ package com.helpdesk.suport.service;
 
 import com.helpdesk.suport.exception.BusinessException;
 import com.helpdesk.suport.exception.ChamadoNaoEncontradoException;
+import com.helpdesk.suport.exception.SetorNaoEncontradoException;
 import com.helpdesk.suport.exception.UsuarioNaoEncontradoException;
 import com.helpdesk.suport.models.dto.*;
 import com.helpdesk.suport.models.entity.*;
 import com.helpdesk.suport.repository.ChamadoRepository;
 import com.helpdesk.suport.repository.MensagemRepository;
+import com.helpdesk.suport.repository.SetorRepository;
 import com.helpdesk.suport.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,10 +25,11 @@ public class ChamadoService {
     private final ChamadoRepository chamadoRepository;
     private final UsuarioRepository usuarioRepository;
     private final MensagemRepository mensagemRepository;
+    private final SetorRepository setorRepository;
 
 
 
-    public Chamado criarChamado(ChamadoCreateDTO dto, UsuarioLogadoDTO usuarioLogado){
+    public ChamadoResponseDTO criarChamado(ChamadoCreateDTO dto, UsuarioLogadoDTO usuarioLogado){
         Usuario criador = usuarioRepository.findById(dto.usuarioCriador())
                 .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário criador não encontrado"));
 
@@ -176,6 +179,20 @@ public class ChamadoService {
         }
 
         return chamadoRepository.findByUsuarioCriador(usuario).stream()
+                .map(this::toResponseDTO)
+                .toList();
+    }
+
+
+    public List<ChamadoResponseDTO> listarChamadosPorSetor(Long setorId, UsuarioLogadoDTO usuarioLogado) {
+        if (!usuarioLogado.isAdmin()) {
+            throw new BusinessException("Apenas administradores podem listar chamados por setor");
+        }
+
+        Setor setor = setorRepository.findById(setorId)
+                .orElseThrow(() -> new SetorNaoEncontradoException("Setor não encontrado"));
+
+        return chamadoRepository.findByUsuarioCriador_Setor(setor).stream()
                 .map(this::toResponseDTO)
                 .toList();
     }
