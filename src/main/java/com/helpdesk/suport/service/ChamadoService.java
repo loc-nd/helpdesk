@@ -28,8 +28,7 @@ public class ChamadoService {
     private final SetorRepository setorRepository;
 
 
-
-    public ChamadoResponseDTO criarChamado(ChamadoCreateDTO dto, UsuarioLogadoDTO usuarioLogado){
+    public ChamadoResponseDTO criarChamado(ChamadoCreateDTO dto, UsuarioLogadoDTO usuarioLogado) {
         Usuario criador = usuarioRepository.findById(dto.usuarioCriador())
                 .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário criador não encontrado"));
 
@@ -57,8 +56,6 @@ public class ChamadoService {
     }
 
 
-
-
     public ChamadoResponseDTO concluirChamado(Long chamadoId, UsuarioLogadoDTO usuarioLogado) {
         Chamado chamado = chamadoRepository.findById(chamadoId)
                 .orElseThrow(() -> new ChamadoNaoEncontradoException("Chamado não encontrado"));
@@ -76,7 +73,6 @@ public class ChamadoService {
         chamado.setStatus(StatusChamadoEnum.CONCLUIDO);
         return toResponseDTO(chamadoRepository.save(chamado));
     }
-
 
 
     public ChamadoResponseDTO atribuirResponsavel(Long chamadoId, Long responsavelId, UsuarioLogadoDTO usuarioLogado) {
@@ -97,7 +93,6 @@ public class ChamadoService {
     }
 
 
-
     public ChamadoResponseDTO atribuirObservador(Long chamadoId, Long observadorId, UsuarioLogadoDTO usuarioLogado) {
         Chamado chamado = chamadoRepository.findById(chamadoId)
                 .orElseThrow(() -> new ChamadoNaoEncontradoException("Chamado não encontrado"));
@@ -112,7 +107,6 @@ public class ChamadoService {
         chamado.getObservadores().add(observador);
         return toResponseDTO(chamadoRepository.save(chamado));
     }
-
 
 
     public MensagemResponseDTO enviarMensagem(MensagemCreateDTO dto, UsuarioLogadoDTO usuarioLogado) {
@@ -150,8 +144,6 @@ public class ChamadoService {
     }
 
 
-
-
     public List<ChamadoResponseDTO> listarChamados(UsuarioLogadoDTO usuarioLogado) {
         List<Chamado> chamados;
 
@@ -165,7 +157,6 @@ public class ChamadoService {
 
         return chamados.stream().map(this::toResponseDTO).toList();
     }
-
 
 
     public List<ChamadoResponseDTO> listarChamadosPorUsuario(Long usuarioId, UsuarioLogadoDTO usuarioLogado) {
@@ -196,7 +187,6 @@ public class ChamadoService {
                 .map(this::toResponseDTO)
                 .toList();
     }
-
 
 
     private ChamadoResponseDTO toResponseDTO(Chamado ch) {
