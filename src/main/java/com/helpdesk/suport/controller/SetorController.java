@@ -2,6 +2,7 @@ package com.helpdesk.suport.controller;
 
 import com.helpdesk.suport.models.dto.SetorCreateDTO;
 import com.helpdesk.suport.models.dto.SetorResponseDTO;
+import com.helpdesk.suport.models.dto.UsuarioLogadoDTO;
 import com.helpdesk.suport.service.SetorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +35,12 @@ public class SetorController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarSetor(@PathVariable Long id) {
-        setorService.deletarSetor(id);
+    public ResponseEntity<Void> deletarSetor(
+            @PathVariable Long id,
+            @RequestParam Long usuarioLogadoId,
+            @RequestParam(defaultValue = "false") boolean isAdmin) {
+
+        setorService.deletarSetor(id, new UsuarioLogadoDTO(usuarioLogadoId, isAdmin));
         return ResponseEntity.noContent().build();
     }
 }

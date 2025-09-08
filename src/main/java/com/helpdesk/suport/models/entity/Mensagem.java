@@ -24,6 +24,9 @@ public class Mensagem {
     @Column(nullable = false)
     private LocalDateTime dataEnvio =  LocalDateTime.now();
     @ManyToOne
+    @JoinColumn(name = "autor_id", nullable = false)
+    private Usuario usuarioAutor;
+    @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuarioRemetente;
     @ManyToOne

@@ -1,8 +1,10 @@
 package com.helpdesk.suport.service;
 
+import com.helpdesk.suport.exception.BusinessException;
 import com.helpdesk.suport.exception.SetorNaoEncontradoException;
 import com.helpdesk.suport.models.dto.SetorCreateDTO;
 import com.helpdesk.suport.models.dto.SetorResponseDTO;
+import com.helpdesk.suport.models.dto.UsuarioLogadoDTO;
 import com.helpdesk.suport.models.entity.Setor;
 import com.helpdesk.suport.models.entity.Usuario;
 import com.helpdesk.suport.repository.SetorRepository;
@@ -38,8 +40,19 @@ public class SetorService {
         return toResponseDTO(setorRepository.save(setor));
     }
 
-    public void deletarSetor(Long id) {
-        setorRepository.deleteById(id);
+    public void deletarSetor(Long setorId, UsuarioLogadoDTO usuarioLogado) {
+        if (!usuarioLogado.isAdmin()) {
+            throw new BusinessException("Apenas administradores podem excluir setores");
+        }
+
+        Setor setor = setorRepository.findById(setorId)
+                .orElseThrow(() -> new SetorNaoEncontradoException("Setor não encontrado"));
+
+        if (!setor.getUsuarios().isEmpty()) {
+            throw new BusinessException("Não é possível excluir setor que possui usuários vinculados");
+        }
+
+        setorRepository.deleteById(setorId);
     }
 
     private SetorResponseDTO toResponseDTO(Setor setor) {

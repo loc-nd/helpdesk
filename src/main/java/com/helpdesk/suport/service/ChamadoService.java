@@ -76,9 +76,6 @@ public class ChamadoService {
 
 
     public ChamadoResponseDTO atribuirResponsavel(Long chamadoId, Long responsavelId, UsuarioLogadoDTO usuarioLogado) {
-        if (!usuarioLogado.isAdmin()) {
-            throw new BusinessException("Apenas administradores podem atribuir responsáveis");
-        }
 
         Chamado chamado = chamadoRepository.findById(chamadoId)
                 .orElseThrow(() -> new ChamadoNaoEncontradoException("Chamado não encontrado"));
@@ -86,10 +83,21 @@ public class ChamadoService {
         Usuario responsavel = usuarioRepository.findById(responsavelId)
                 .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário responsável não encontrado"));
 
+
+        if (!usuarioLogado.isAdmin()) {
+            Usuario usuario = usuarioRepository.findById(usuarioLogado.id())
+                    .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário logado não encontrado"));
+
+            if (!usuario.getSetor().equals(chamado.getUsuarioCriador().getSetor())) {
+                throw new BusinessException("Usuário não autorizado a atribuir responsável para chamados de outro setor");
+            }
+        }
+
         chamado.setUsuarioResponsavel(responsavel);
         chamado.setStatus(StatusChamadoEnum.EM_ATENDIMENTO);
 
         return toResponseDTO(chamadoRepository.save(chamado));
+
     }
 
 
@@ -97,12 +105,19 @@ public class ChamadoService {
         Chamado chamado = chamadoRepository.findById(chamadoId)
                 .orElseThrow(() -> new ChamadoNaoEncontradoException("Chamado não encontrado"));
 
-        if (!usuarioLogado.isAdmin() && !usuarioLogado.id().equals(chamado.getUsuarioCriador().getId())) {
-            throw new BusinessException("Usuário não autorizado a adicionar observadores");
-        }
-
         Usuario observador = usuarioRepository.findById(observadorId)
                 .orElseThrow(() -> new UsuarioNaoEncontradoException("Observador não encontrado"));
+
+        // Regras de permissão
+        if (!usuarioLogado.isAdmin()) {
+            boolean ehCriador = chamado.getUsuarioCriador().getId().equals(usuarioLogado.id());
+            boolean ehResponsavel = chamado.getUsuarioResponsavel() != null &&
+                    chamado.getUsuarioResponsavel().getId().equals(usuarioLogado.id());
+
+            if (!ehCriador && !ehResponsavel) {
+                throw new BusinessException("Somente criador, responsável ou administrador podem adicionar observadores");
+            }
+        }
 
         chamado.getObservadores().add(observador);
         return toResponseDTO(chamadoRepository.save(chamado));
@@ -144,18 +159,34 @@ public class ChamadoService {
     }
 
 
-    public List<ChamadoResponseDTO> listarChamados(UsuarioLogadoDTO usuarioLogado) {
+    public List<ChamadoResponseDTO> listarChamados(String status, String prioridade, UsuarioLogadoDTO usuarioLogado) {
         List<Chamado> chamados;
 
         if (usuarioLogado.isAdmin()) {
-            chamados = chamadoRepository.findAll();
+            // Admin pode filtrar
+            if (status != null && prioridade != null) {
+                chamados = chamadoRepository.findByStatusAndPrioridade(
+                        StatusChamadoEnum.valueOf(status),
+                        PrioridadeEnum.valueOf(prioridade)
+                );
+            } else if (status != null) {
+                chamados = chamadoRepository.findByStatus(StatusChamadoEnum.valueOf(status));
+            } else if (prioridade != null) {
+                chamados = chamadoRepository.findByPrioridade(PrioridadeEnum.valueOf(prioridade));
+            } else {
+                chamados = chamadoRepository.findByStatusNot(StatusChamadoEnum.CONCLUIDO);
+            }
         } else {
+            // Usuário comum só vê chamados do próprio setor
             Usuario usuario = usuarioRepository.findById(usuarioLogado.id())
                     .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário não encontrado"));
+
             chamados = chamadoRepository.findByUsuarioCriador_Setor(usuario.getSetor());
         }
 
-        return chamados.stream().map(this::toResponseDTO).toList();
+        return chamados.stream()
+                .map(this::toResponseDTO)
+                .toList();
     }
 
 
@@ -175,7 +206,7 @@ public class ChamadoService {
     }
 
 
-    public List<ChamadoResponseDTO> listarChamadosPorSetor(Long setorId, UsuarioLogadoDTO usuarioLogado) {
+    public List<ChamadoResponseDTO> listarChamadosPorSetorCriador(Long setorId, UsuarioLogadoDTO usuarioLogado) {
         if (!usuarioLogado.isAdmin()) {
             throw new BusinessException("Apenas administradores podem listar chamados por setor");
         }

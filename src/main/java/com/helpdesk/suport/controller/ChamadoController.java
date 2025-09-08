@@ -34,13 +34,17 @@ public class ChamadoController {
             @RequestParam Long usuarioLogadoId,
             @RequestParam(defaultValue = "false") boolean isAdmin) {
 
-        ChamadoFiltroDTO filtro = new ChamadoFiltroDTO(status, prioridade);
-        var lista = chamadoService.listarChamados(new UsuarioLogadoDTO(usuarioLogadoId, isAdmin));
+        var lista = chamadoService.listarChamados(
+                status,
+                prioridade,
+                new UsuarioLogadoDTO(usuarioLogadoId, isAdmin)
+        );
+
         return ResponseEntity.ok(lista);
     }
 
     @GetMapping("/usuario/{userId}")
-    public ResponseEntity<List<ChamadoResponseDTO>> listarPorUsuarioCriador(
+    public ResponseEntity<List<ChamadoResponseDTO>> listarChamadoPorUsuarioCriador(
             @PathVariable Long userId,
             @RequestParam Long usuarioLogadoId,
             @RequestParam(defaultValue = "false") boolean isAdmin) {
@@ -50,16 +54,16 @@ public class ChamadoController {
     }
 
     @GetMapping("/setor/{setorId}")
-    public ResponseEntity<List<ChamadoResponseDTO>> listarPorSetor(
+    public ResponseEntity<List<ChamadoResponseDTO>> listarChamadosPorSetorCriador(
             @PathVariable Long setorId,
             @RequestParam Long usuarioLogadoId,
             @RequestParam(defaultValue = "false") boolean isAdmin) {
 
-        var lista = chamadoService.listarChamadosPorSetor(setorId, new UsuarioLogadoDTO(usuarioLogadoId, isAdmin));
+        var lista = chamadoService.listarChamadosPorSetorCriador(setorId, new UsuarioLogadoDTO(usuarioLogadoId, isAdmin));
         return ResponseEntity.ok(lista);
     }
 
-    @PutMapping("/{id}/atribuir/{responsavelId}")
+    @PutMapping("/{id}/atribuir-responsavel/{responsavelId}")
     public ResponseEntity<ChamadoResponseDTO> atribuirResponsavel(
             @PathVariable Long id,
             @PathVariable Long responsavelId,
@@ -67,6 +71,16 @@ public class ChamadoController {
             @RequestParam(defaultValue = "false") boolean isAdmin) {
 
         var res = chamadoService.atribuirResponsavel(id, responsavelId, new UsuarioLogadoDTO(usuarioLogadoId, isAdmin));
+        return ResponseEntity.ok(res);
+    }
+
+    @PutMapping("/{id}/atribuir-observador/{observadorId}")
+    public ResponseEntity<ChamadoResponseDTO> atribuirObservador(
+            @PathVariable Long id,
+            @PathVariable Long observadorId,
+            @RequestParam Long usuarioLogadoId,
+            @RequestParam(defaultValue = "false") boolean isAdmin) {
+        var res = chamadoService.atribuirObservador(id, observadorId, new UsuarioLogadoDTO(usuarioLogadoId, isAdmin));
         return ResponseEntity.ok(res);
     }
 

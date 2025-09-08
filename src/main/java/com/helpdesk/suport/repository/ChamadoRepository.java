@@ -22,4 +22,10 @@ public interface ChamadoRepository extends JpaRepository<Chamado, Long> {
 
     List<Chamado> findByPrioridade(PrioridadeEnum prioridade);
 
+    List<Chamado> findByStatusNot(StatusChamadoEnum status);
+
+    List<Chamado> findByStatusAndPrioridade(StatusChamadoEnum status, PrioridadeEnum prioridade);
+
+    List<Chamado> findByUsuarioCriador_SetorAndStatusNot(Setor setor, StatusChamadoEnum status);
+
 }
